@@ -8,11 +8,14 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login');
+  const isAuthPage =
+    request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname.startsWith('/register');
   const isApiAuth = request.nextUrl.pathname.startsWith('/api/auth');
+  const isPublicApi = request.nextUrl.pathname.startsWith('/api/register');
   const isApi = request.nextUrl.pathname.startsWith('/api');
 
-  if (isApiAuth) {
+  if (isApiAuth || isPublicApi) {
     return NextResponse.next();
   }
 
@@ -47,6 +50,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|icons/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|sw.js|workbox-.*\\.js|icons/|logo.svg).*)',
   ],
 };
